@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +19,6 @@
     <meta name="twitter:title" content="Chat Anônimo">
     <meta name="twitter:description" content="Um chat anônimo divertido para conversar com pessoas aleatórias.">
     <meta name="twitter:image" content="https://redeprivada.mundodainternet.org/logo.jpg">
-
 
     <style>
         body {
@@ -65,6 +63,8 @@
             width: 80%;
             margin-right: 10px;
             border-radius: 5px;
+            /* Define o número máximo de caracteres */
+            maxlength: 200; /* Exemplo de limite de 200 caracteres */
         }
 
         #send {
@@ -82,11 +82,10 @@
         }
     </style>
 </head>
-
 <body>
     <ul id="messages"></ul>
     <form id="form" action="">
-        <input id="input" autocomplete="off" /><button id="send">Enviar</button>
+        <input id="input" autocomplete="off" maxlength="200" /><button id="send">Enviar</button>
     </form>
 
     <script src="/socket.io/socket.io.js"></script>
@@ -98,7 +97,7 @@
         const messages = document.getElementById('messages');
         const sendButton = document.getElementById('send');
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             if (input.value) {
                 socket.emit('chat message', input.value);
@@ -108,7 +107,7 @@
             }
         });
 
-        socket.on('chat message', function (data) {
+        socket.on('chat message', function(data) {
             if (data && data.id && data.msg) {
                 const item = document.createElement('li');
                 item.textContent = `${data.id}: ${data.msg}`;
@@ -120,7 +119,7 @@
             }
         });
 
-        socket.on('chat error', function (msg) {
+        socket.on('chat error', function(msg) {
             const item = document.createElement('li');
             item.textContent = msg;
             item.style.color = 'red'; // Mensagem de erro em vermelho
@@ -129,5 +128,4 @@
         });
     </script>
 </body>
-
 </html>
