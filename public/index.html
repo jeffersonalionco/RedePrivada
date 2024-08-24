@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Anônimo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #fff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        #messages {
+            list-style-type: none;
+            padding: 0;
+            width: 80%;
+            max-width: 600px;
+            margin-bottom: 20px;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        #messages li {
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            word-wrap: break-word;
+        }
+
+        #form {
+            display: flex;
+            justify-content: center;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        #input {
+            border: none;
+            padding: 10px;
+            width: 80%;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+
+        #send {
+            padding: 10px;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #send:disabled {
+            background-color: #777;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+        <input id="input" autocomplete="off" /><button id="send">Enviar</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const form = document.getElementById('form');
+        const input = document.getElementById('input');
+        const messages = document.getElementById('messages');
+        const sendButton = document.getElementById('send');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (input.value) {
+                socket.emit('chat message', input.value);
+                input.value = '';
+                sendButton.disabled = true;
+                setTimeout(() => sendButton.disabled = false, 10000); // Desbloqueia o botão após 10 segundos
+            }
+        });
+
+        socket.on('chat message', function(data) {
+            if (data && data.id && data.msg) {
+                const item = document.createElement('li');
+                item.textContent = `${data.id}: ${data.msg}`;
+                if (data.color) {
+                    item.style.border = `2px solid ${data.color}`; // Define a cor da borda com a cor do usuário
+                }
+                messages.appendChild(item);
+                messages.scrollTop = messages.scrollHeight; // Rolagem automática para a última mensagem
+            }
+        });
+
+        socket.on('chat error', function(msg) {
+            const item = document.createElement('li');
+            item.textContent = msg;
+            item.style.color = 'red'; // Mensagem de erro em vermelho
+            messages.appendChild(item);
+            messages.scrollTop = messages.scrollHeight; // Rolagem automática para a última mensagem
+        });
+    </script>
+</body>
+</html>
