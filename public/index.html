@@ -1,9 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Anônimo</title>
+    <!-- Meta Tags para SEO -->
+    <meta name="description" content="Um chat anônimo divertido para conversar com pessoas aleatórias.">
+
+    <!-- Meta Tags Open Graph (para Facebook, LinkedIn) -->
+    <meta property="og:title" content="Chat Anônimo" />
+    <meta property="og:description" content="Um chat anônimo divertido para conversar com pessoas aleatórias." />
+    <meta property="og:image" content="https://redeprivada.mundodainternet.org/public/logo.jpg" />
+    <meta property="og:url" content="https://redeprivada.mundodainternet.org/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Meta Tags para Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Chat Anônimo">
+    <meta name="twitter:description" content="Um chat anônimo divertido para conversar com pessoas aleatórias.">
+    <meta name="twitter:image" content="https://redeprivada.mundodainternet.org/public/logo.jpg">
+
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -64,6 +82,7 @@
         }
     </style>
 </head>
+
 <body>
     <ul id="messages"></ul>
     <form id="form" action="">
@@ -79,7 +98,7 @@
         const messages = document.getElementById('messages');
         const sendButton = document.getElementById('send');
 
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             e.preventDefault();
             if (input.value) {
                 socket.emit('chat message', input.value);
@@ -89,7 +108,7 @@
             }
         });
 
-        socket.on('chat message', function(data) {
+        socket.on('chat message', function (data) {
             if (data && data.id && data.msg) {
                 const item = document.createElement('li');
                 item.textContent = `${data.id}: ${data.msg}`;
@@ -101,7 +120,7 @@
             }
         });
 
-        socket.on('chat error', function(msg) {
+        socket.on('chat error', function (msg) {
             const item = document.createElement('li');
             item.textContent = msg;
             item.style.color = 'red'; // Mensagem de erro em vermelho
@@ -110,4 +129,5 @@
         });
     </script>
 </body>
+
 </html>
